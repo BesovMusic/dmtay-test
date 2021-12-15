@@ -1,8 +1,7 @@
 import { createStore } from 'vuex';
 import axios from 'axios';
 
-// колличество вопросов в ответе сервера
-const NUMBER_OF_QUESTIONS = 5;
+const MAX_COUNT_QUESTIONS = 5;
 
 export default createStore({
 	state: {
@@ -19,15 +18,12 @@ export default createStore({
 		},
 	},
 	actions: {
-		getQuestionsFromApi({ commit }) {
+		async getQuestionsFromApi({ commit }) {
 			const url = new URL('https://opentdb.com/api.php');
-			url.searchParams.set('amount', NUMBER_OF_QUESTIONS);
-			axios
-				.get(url)
-				.then((response) => {
-					commit('questions', response.data.results);
-				})
-				.catch(console.log);
+			url.searchParams.set('amount', MAX_COUNT_QUESTIONS);
+			const response = await axios.get(url)
+			.catch(console.log);
+			commit('questions', response.data.results);
 		},
 		sendAnswer({ state }, userAnswer) { // eslint-disable-line no-unused-vars
 			axios
