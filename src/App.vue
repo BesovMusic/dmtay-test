@@ -14,11 +14,6 @@ export default {
 	components: {
 		Card,
 	},
-	data() {
-		return {
-			loading: false,
-		};
-	},
 	methods: {
 		...mapActions(['getQuestionsFromApi']),
 	},
@@ -27,11 +22,3 @@ export default {
 	},
 };
 </script>
-
-<style lang="scss">
-// #app {
-// 	display: flex;
-// 	align-items: center;
-// 	min-height: 60vh;
-// }
-</style>

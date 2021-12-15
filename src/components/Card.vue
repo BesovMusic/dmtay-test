@@ -1,11 +1,12 @@
 <template>
 	<div v-if="questions" class="card mt-2 shadow-sm">
 		<div class="card-body">
-			<h5 class="card-title">{{ questions.category }}</h5>
-			<h6 class="card-subtitle mb-2 text-muted">
-				{{ questions.difficulty }}
-			</h6>
-			<p class="card-text">{{ questions.question }}</p>
+			<h5 class="card-title" v-html="questions.category"></h5>
+			<h6
+				class="card-subtitle mb-2 text-muted"
+				v-html="questions.difficulty"
+			></h6>
+			<p class="card-text" v-html="questions.question"></p>
 			<div
 				v-for="(answer, index) in answers"
 				:key="index"
@@ -18,13 +19,14 @@
 					:value="answer"
 					v-model="userAnswer"
 				/>
-				<label class="form-check-label"> {{ answer }} </label>
+				<label class="form-check-label" v-html="answer"></label>
 			</div>
 			<button class="btn btn-primary" @click="answerSelected">
 				Next
 			</button>
 		</div>
 	</div>
+
 	<div v-show="gameEnded" class="finalWrapper">
 		<div class="card mt-2 shadow-sm">
 			<div class="card-body">
@@ -81,9 +83,10 @@ export default {
 			return this.getQuestionsFromState[this.cardNumber];
 		},
 		answers() {
-			return this.questions.incorrect_answers.concat(
+			let arr = this.questions.incorrect_answers.concat(
 				this.questions.correct_answer
 			);
+			return arr.sort(() => Math.random() - 0.5);
 		},
 	},
 };
