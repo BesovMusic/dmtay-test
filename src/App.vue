@@ -1,31 +1,37 @@
 <template>
 	<div class="container">
-		<Card v-if="!this.getLoadingFromState" />
+		<Card />
 	</div>
 </template>
 
 <script>
 import Card from './components/Card.vue';
-import { mapGetters } from 'vuex';
+
+import { mapActions } from 'vuex';
 
 export default {
 	name: 'App',
 	components: {
 		Card,
 	},
-	computed: {
-		...mapGetters(['getLoadingFromState']),
+	data() {
+		return {
+			loading: false,
+		};
+	},
+	methods: {
+		...mapActions(['getQuestionsFromApi']),
 	},
 	created() {
-		this.$store.dispatch('GET_QUESTIONS_FROM_API');
+		this.getQuestionsFromApi();
 	},
 };
 </script>
 
 <style lang="scss">
-#app {
-	display: flex;
-	align-items: center;
-	min-height: 60vh;
-}
+// #app {
+// 	display: flex;
+// 	align-items: center;
+// 	min-height: 60vh;
+// }
 </style>

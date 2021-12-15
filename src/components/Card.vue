@@ -1,64 +1,82 @@
 <template>
-	<div class="card mt-2 shadow-sm">
+	<div v-if="questions" class="card mt-2 shadow-sm">
 		<div class="card-body">
 			<h5 class="card-title">{{ questions.category }}</h5>
 			<h6 class="card-subtitle mb-2 text-muted">
 				{{ questions.difficulty }}
 			</h6>
 			<p class="card-text">{{ questions.question }}</p>
-			<Radio
+			<div
 				v-for="(answer, index) in answers"
 				:key="index"
-				:answer="answer"
-				@changeAnswer="changeAnswer"
-			/>
+				class="form-check form-check-inline"
+			>
+				<input
+					class="form-check-input"
+					name="flexRadioDefault"
+					type="radio"
+					:value="answer"
+					v-model="userAnswer"
+				/>
+				<label class="form-check-label"> {{ answer }} </label>
+			</div>
 			<button class="btn btn-primary" @click="answerSelected">
 				Next
 			</button>
 		</div>
 	</div>
-	{{ correctAnswerCounter }}
-	{{ userAnswer }}
+	<div v-show="gameEnded" class="finalWrapper">
+		<div class="card mt-2 shadow-sm">
+			<div class="card-body">
+				<h5 class="card-title">Final</h5>
+				<p class="card-text">
+					Correct answers: {{ correctAnswerCounter }}
+				</p>
+				<button class="btn btn-primary" @click="retry">Retry</button>
+			</div>
+		</div>
+	</div>
 </template>
 
 <script>
-import Radio from './Radio.vue';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
 	name: 'Card',
-	components: {
-		Radio,
-	},
 	data() {
 		return {
 			cardNumber: 0,
 			correctAnswerCounter: 0,
 			userAnswer: '',
+			gameEnded: false,
 		};
 	},
 	methods: {
+		...mapActions(['postAnswers', 'getQuestionsFromApi']),
 		answerSelected() {
-			if (this.getUserAnswerFromState === this.questions.correct_answer) {
+			if (this.userAnswer === this.questions.correct_answer) {
 				this.correctAnswerCounter++;
 			}
-			this.$store.dispatch('POST_ANSWERS');
+			this.postAnswers(this.userAnswer);
 			this.incrementCardNumber();
 		},
 		incrementCardNumber() {
 			if (this.cardNumber < this.getQuestionsFromState.length - 1) {
 				this.cardNumber++;
-				this.$store.state.userAnswer = '';
 			} else {
-				alert('Игра окончена');
+				this.gameEnded = true;
 			}
+			this.userAnswer = '';
 		},
-		changeAnswer(answer) {
-			this.userAnswer = answer;
+		retry() {
+			this.getQuestionsFromApi();
+			this.cardNumber = 0;
+			this.correctAnswerCounter = 0;
+			this.gameEnded = false;
 		},
 	},
 	computed: {
-		...mapGetters(['getQuestionsFromState', 'getUserAnswerFromState']),
+		...mapGetters(['getQuestionsFromState']),
 		questions() {
 			return this.getQuestionsFromState[this.cardNumber];
 		},
@@ -70,3 +88,19 @@ export default {
 	},
 };
 </script>
+
+<style lang="scss">
+.finalWrapper {
+	position: absolute;
+	display: flex;
+	justify-content: center;
+	text-align: center;
+	align-items: center;
+	height: 100vh;
+	width: 100%;
+	z-index: 2;
+	background: #fff;
+	top: 0;
+	left: 0;
+}
+</style>
