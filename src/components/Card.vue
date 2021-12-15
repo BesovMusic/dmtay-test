@@ -21,7 +21,11 @@
 				/>
 				<label class="form-check-label" v-html="answer"></label>
 			</div>
-			<button class="btn btn-primary" @click="answerSelected">
+			<button
+				class="btn btn-primary"
+				@click="answerSelected"
+				:class="{ disabled: !enableButton }"
+			>
 				Next
 			</button>
 		</div>
@@ -87,6 +91,9 @@ export default {
 				this.questions.correct_answer
 			);
 			return arr.sort(() => Math.random() - 0.5);
+		},
+		enableButton() {
+			return this.userAnswer != '';
 		},
 	},
 };

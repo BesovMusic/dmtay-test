@@ -34,8 +34,7 @@ export default createStore({
 				.post('http://localhost:3000/answers/', {
 					answer: userAnswer,
 				})
-				.then((response) => {
-					console.log(response);
+				.then(() => {
 					console.log(state);
 				})
 				.catch(console.log);
