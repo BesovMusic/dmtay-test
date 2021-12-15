@@ -1,12 +1,18 @@
 <template>
-	<div v-if="questions" class="card mt-2 shadow-sm">
+	<div v-if="question" class="card mt-2 shadow-sm">
 		<div class="card-body">
-			<h5 class="card-title" v-html="questions.category"></h5>
+			<h5
+				class="card-title" 
+				v-html="question.category"
+			></h5>
 			<h6
 				class="card-subtitle mb-2 text-muted"
-				v-html="questions.difficulty"
+				v-html="question.difficulty"
 			></h6>
-			<p class="card-text" v-html="questions.question"></p>
+			<p
+				class="card-text" 
+				v-html="question.question"
+			></p>
 			<div
 				v-for="(answer, index) in answers"
 				:key="index"
@@ -19,12 +25,15 @@
 					:value="answer"
 					v-model="userAnswer"
 				/>
-				<label class="form-check-label" v-html="answer"></label>
+				<label
+					class="form-check-label"
+					v-html="answer"
+				></label>
 			</div>
 			<button
 				class="btn btn-primary"
-				@click="answerSelected"
-				:class="{ disabled: !enableButton }"
+				@click="selectAnswer"
+				:class="{ disabled: !isButtonActive }"
 			>
 				Next
 			</button>
@@ -58,16 +67,17 @@ export default {
 		};
 	},
 	methods: {
-		...mapActions(['postAnswers', 'getQuestionsFromApi']),
-		answerSelected() {
-			if (this.userAnswer === this.questions.correct_answer) {
+		...mapActions(['sendAnswer', 'getQuestionsFromApi']),
+		selectAnswer(e) {
+			if (this.userAnswer === this.question.correct_answer) {
 				this.correctAnswerCounter++;
 			}
-			this.postAnswers(this.userAnswer);
+			this.sendAnswer(this.userAnswer);
 			this.incrementCardNumber();
+			e.target.blur();
 		},
 		incrementCardNumber() {
-			if (this.cardNumber < this.getQuestionsFromState.length - 1) {
+			if (this.cardNumber < this.getQuestions.length - 1) {
 				this.cardNumber++;
 			} else {
 				this.gameEnded = true;
@@ -82,17 +92,17 @@ export default {
 		},
 	},
 	computed: {
-		...mapGetters(['getQuestionsFromState']),
-		questions() {
-			return this.getQuestionsFromState[this.cardNumber];
+		...mapGetters(['getQuestions']),
+		question() {
+			return this.getQuestions[this.cardNumber];
 		},
 		answers() {
-			let arr = this.questions.incorrect_answers.concat(
-				this.questions.correct_answer
+			const arr = this.question.incorrect_answers.concat(
+				this.question.correct_answer
 			);
 			return arr.sort(() => Math.random() - 0.5);
 		},
-		enableButton() {
+		isButtonActive() {
 			return this.userAnswer != '';
 		},
 	},

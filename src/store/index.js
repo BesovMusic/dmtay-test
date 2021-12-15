@@ -2,43 +2,39 @@ import { createStore } from 'vuex';
 import axios from 'axios';
 
 // колличество вопросов в ответе сервера
-const key = 5;
+const NUMBER_OF_QUESTIONS = 5;
 
 export default createStore({
 	state: {
 		questions: [],
 	},
 	getters: {
-		getQuestionsFromState: (state) => {
+		getQuestions: (state) => {
 			return state.questions;
 		},
 	},
 	mutations: {
-		setQuestionsToState: (state, questions) => {
+		questions: (state, questions) => {
 			state.questions = questions;
 		},
 	},
 	actions: {
 		getQuestionsFromApi({ commit }) {
-			let url = new URL('https://opentdb.com/api.php');
-			url.searchParams.set('amount', key);
+			const url = new URL('https://opentdb.com/api.php');
+			url.searchParams.set('amount', NUMBER_OF_QUESTIONS);
 			axios
 				.get(url)
 				.then((response) => {
-					commit('setQuestionsToState', response.data.results);
+					commit('questions', response.data.results);
 				})
 				.catch(console.log);
 		},
-		postAnswers({ state }, userAnswer) {
+		sendAnswer({ state }, userAnswer) { // eslint-disable-line no-unused-vars
 			axios
 				.post('http://localhost:3000/answers/', {
 					answer: userAnswer,
 				})
-				.then(() => {
-					console.log(state);
-				})
 				.catch(console.log);
 		},
 	},
-	modules: {},
 });
