@@ -8,7 +8,7 @@ export default createStore({
 		questions: [],
 	},
 	getters: {
-		getQuestions: (state) => {
+		questions: (state) => {
 			return state.questions;
 		},
 	},
@@ -18,11 +18,11 @@ export default createStore({
 		},
 	},
 	actions: {
-		async getQuestionsFromApi({ commit }) {
+		async getQuestions({ commit }) {
 			const url = new URL('https://opentdb.com/api.php');
 			url.searchParams.set('amount', MAX_COUNT_QUESTIONS);
 			const response = await axios.get(url)
-			.catch(console.log);
+				.catch(console.log);
 			commit('questions', response.data.results);
 		},
 		sendAnswer({ state }, userAnswer) { // eslint-disable-line no-unused-vars

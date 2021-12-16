@@ -67,7 +67,7 @@ export default {
 		};
 	},
 	methods: {
-		...mapActions(['sendAnswer', 'getQuestionsFromApi']),
+		...mapActions(['sendAnswer', 'getQuestions']),
 		selectAnswer(e) {
 			if (this.userAnswer === this.question.correct_answer) {
 				this.correctAnswerCounter++;
@@ -77,7 +77,7 @@ export default {
 			e.target.blur();
 		},
 		incrementCardNumber() {
-			if (this.cardNumber < this.getQuestions.length - 1) {
+			if (this.cardNumber < this.questions.length - 1) {
 				this.cardNumber++;
 			} else {
 				this.gameEnded = true;
@@ -85,16 +85,16 @@ export default {
 			this.userAnswer = '';
 		},
 		retry() {
-			this.getQuestionsFromApi();
+			this.getQuestions();
 			this.cardNumber = 0;
 			this.correctAnswerCounter = 0;
 			this.gameEnded = false;
 		},
 	},
 	computed: {
-		...mapGetters(['getQuestions']),
+		...mapGetters(['questions']),
 		question() {
-			return this.getQuestions[this.cardNumber];
+			return this.questions[this.cardNumber];
 		},
 		answers() {
 			const arr = this.question.incorrect_answers.concat(

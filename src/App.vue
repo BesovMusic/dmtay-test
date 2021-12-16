@@ -15,10 +15,10 @@ export default {
 		Card,
 	},
 	methods: {
-		...mapActions(['getQuestionsFromApi']),
+		...mapActions(['getQuestions']),
 	},
 	created() {
-		this.getQuestionsFromApi();
+		this.getQuestions();
 	},
 };
 </script>
